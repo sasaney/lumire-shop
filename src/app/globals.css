@@ -182,3 +182,22 @@ body {
     transform: none;
   }
 }
+
+/* موبایل: جلوگیری از اسکرول افقی ناخواسته */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* جداول ادمین روی موبایل اسکرول افقی داخل کانتینر */
+.admin-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
