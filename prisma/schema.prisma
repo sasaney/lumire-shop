@@ -1,0 +1,493 @@
+// ============================================================================
+// Prisma schema — آماده برای اتصال به PostgreSQL واقعی
+// ============================================================================
+// این schema هنوز به اپلیکیشن وصل نشده. اپ فعلی روی data/db.json کار می‌کند
+// تا در محیط توسعه بدون دیتابیس هم قابل اجرا باشد.
+//
+// برای فعال‌سازی واقعی:
+//   1. npm install prisma @prisma/client
+//   2. یک دیتابیس PostgreSQL واقعی تهیه کنید (مثلاً Neon, Supabase, Railway, یا سرور خودتان)
+//   3. در .env مقدار DATABASE_URL را ست کنید
+//   4. npx prisma migrate dev --name init
+//   5. لایه src/lib/db.ts را به‌تدریج با Prisma Client جایگزین کنید
+//      (پیشنهاد: ابتدا فقط users/products/orders، بعد بقیه)
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// کاربران و نقش‌ها
+// ---------------------------------------------------------------------------
+
+enum Role {
+  ADMIN
+  STAFF
+  CUSTOMER
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  phone        String?
+  passwordHash String?
+  role         Role      @default(CUSTOMER)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? // soft delete
+
+  addresses     Address[]
+  orders        Order[]
+  reviews       Review[]
+  favorites     Favorite[]
+  activityLogs  ActivityLog[]
+  createdBlogs  Blog[]        @relation("BlogAuthor")
+
+  @@index([email])
+  @@index([role])
+}
+
+model Address {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  receiverName String
+  phone        String
+  province     String
+  city         String
+  addressLine  String
+  postalCode   String?
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// برند و دسته‌بندی
+// ---------------------------------------------------------------------------
+
+model Brand {
+  id        String    @id @default(cuid())
+  nameFa    String
+  nameEn    String?
+  logo      String?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  products Product[]
+
+  @@index([nameFa])
+}
+
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  slug     String     @unique
+  icon     String?
+  image    String?
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryTree")
+
+  order          Int     @default(0)
+  isActive       Boolean @default(true)
+  showInMenu     Boolean @default(true)
+  showInMegaMenu Boolean @default(false)
+  showOnHomepage Boolean @default(false)
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  canonicalUrl    String?
+  ogImage         String?
+
+  createdById String?
+  updatedById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  products ProductCategory[]
+
+  @@index([parentId])
+  @@index([slug])
+}
+
+// رابطه چند-به-چند محصول و دسته‌بندی (یک محصول می‌تواند در چند دسته باشد)
+model ProductCategory {
+  productId  String
+  categoryId String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@index([categoryId])
+}
+
+// ---------------------------------------------------------------------------
+// محصولات
+// ---------------------------------------------------------------------------
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  sku         String        @unique
+  barcode     String?
+  title       String
+  slug        String        @unique
+  brandId     String?
+  brand       Brand?        @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  status      ProductStatus @default(DRAFT)
+
+  price               Decimal @db.Decimal(12, 0)
+  compareAtPrice      Decimal? @db.Decimal(12, 0)
+  stock               Int     @default(0)
+  displayStockOverride Int?   // برای نمایش موجودی ساختگی به خریدار (مثلاً همیشه ۱)
+
+  weightGrams   Int?
+  volumeMl      Int?
+  ingredients   String? @db.Text
+  directions    String? @db.Text
+  warnings      String? @db.Text
+  expirationAt  DateTime?
+  batchNumber   String?
+  countryOfOrigin String?
+
+  description String  @db.Text
+  color       String?
+  video       String?
+
+  // فیلترهای تخصصی آرایشی-بهداشتی
+  skinType     String? // چرب/خشک/مختلط/حساس
+  hairType     String?
+  ageGroup     String?
+  gender       String?
+  isOrganic    Boolean @default(false)
+  isVegan      Boolean @default(false)
+  crueltyFree  Boolean @default(false)
+  parabenFree  Boolean @default(false)
+  sulfateFree  Boolean @default(false)
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  canonicalUrl    String?
+
+  createdById String?
+  updatedById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  categories ProductCategory[]
+  images     ProductImage[]
+  variants   ProductVariant[]
+  tags       ProductTag[]
+  orderItems OrderItem[]
+  reviews    Review[]
+  favorites  Favorite[]
+  inventoryLogs InventoryLog[]
+
+  relatedTo   RelatedProduct[] @relation("RelatedFrom")
+  relatedFrom RelatedProduct[] @relation("RelatedTo")
+
+  @@index([slug])
+  @@index([sku])
+  @@index([brandId])
+  @@index([status])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  isMain    Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String // مثلاً "حجم: ۵۰ میلی‌لیتر" یا "رنگ: قرمز"
+  sku       String  @unique
+  price     Decimal @db.Decimal(12, 0)
+  stock     Int     @default(0)
+
+  @@index([productId])
+}
+
+model Tag {
+  id       String       @id @default(cuid())
+  name     String       @unique
+  products ProductTag[]
+}
+
+model ProductTag {
+  productId String
+  tagId     String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([productId, tagId])
+}
+
+model RelatedProduct {
+  productId        String
+  relatedProductId String
+  type              String // RELATED | CROSS_SELL | UP_SELL
+  product           Product @relation("RelatedFrom", fields: [productId], references: [id], onDelete: Cascade)
+  relatedProduct    Product @relation("RelatedTo", fields: [relatedProductId], references: [id], onDelete: Cascade)
+
+  @@id([productId, relatedProductId, type])
+}
+
+model InventoryLog {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  change    Int // مثبت یا منفی
+  reason    String // ORDER | RESTOCK | ADJUSTMENT | RETURN
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+// ---------------------------------------------------------------------------
+// سفارش، پرداخت (فقط کارت‌به‌کارت)
+// ---------------------------------------------------------------------------
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  RECEIPT_UPLOADED
+  WAITING_APPROVAL
+  PAYMENT_APPROVED
+  PREPARING
+  PACKED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+model Order {
+  id             String      @id @default(cuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id])
+  status         OrderStatus @default(PENDING_PAYMENT)
+  total          Decimal     @db.Decimal(12, 0)
+  receiverName   String
+  phone          String
+  address        String
+  note           String?
+  trackingCode   String?
+  shippingProvider String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  items    OrderItem[]
+  payments Payment[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  title     String // snapshot از عنوان محصول در لحظه سفارش
+  price     Decimal @db.Decimal(12, 0)
+  quantity  Int
+
+  @@index([orderId])
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  orderId        String
+  order          Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status         PaymentStatus @default(PENDING)
+  trackingNumber String?
+  rejectionReason String?
+  reviewedById   String?
+  reviewedAt     DateTime?
+  createdAt      DateTime      @default(now())
+
+  receipts PaymentReceipt[]
+
+  @@index([orderId])
+}
+
+model PaymentReceipt {
+  id        String   @id @default(cuid())
+  paymentId String
+  payment   Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  uploadedAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// نظرات و علاقه‌مندی‌ها
+// ---------------------------------------------------------------------------
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int // 1 تا 5
+  comment   String?  @db.Text
+  isApproved Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Favorite {
+  userId    String
+  productId String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, productId])
+}
+
+// ---------------------------------------------------------------------------
+// بلاگ
+// ---------------------------------------------------------------------------
+
+model BlogCategory {
+  id    String @id @default(cuid())
+  name  String
+  slug  String @unique
+  blogs Blog[]
+}
+
+model Blog {
+  id              String        @id @default(cuid())
+  title           String
+  slug            String        @unique
+  content         String        @db.Text
+  customCode      String?       @db.Text // HTML/CSS/JS سفارشی
+  coverImage      String?
+  authorId        String
+  author          User          @relation("BlogAuthor", fields: [authorId], references: [id])
+  categoryId      String?
+  category        BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  status          ProductStatus @default(DRAFT) // DRAFT/PUBLISHED/ARCHIVED به‌اشتراک با محصول
+  readingTimeMin  Int?
+  metaTitle       String?
+  metaDescription String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([slug])
+}
+
+// ---------------------------------------------------------------------------
+// رسانه، بنر/اسلایدر، تنظیمات، کوپن
+// ---------------------------------------------------------------------------
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  type      String // IMAGE | VIDEO
+  altText   String?
+  width     Int?
+  height    Int?
+  sizeBytes Int?
+  hash      String? // برای تشخیص فایل تکراری
+  createdAt DateTime @default(now())
+
+  @@index([hash])
+}
+
+model Slide {
+  id        String   @id @default(cuid())
+  image     String
+  title     String
+  subtitle  String?
+  link      String?
+  active    Boolean  @default(true)
+  priority  Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Banner {
+  id       String  @id @default(cuid())
+  image    String
+  link     String?
+  location String // HOMEPAGE_TOP | SIDEBAR | ...
+  active   Boolean @default(true)
+}
+
+model Coupon {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  type          String // PERCENT | FIXED
+  value         Decimal  @db.Decimal(12, 0)
+  minOrderTotal Decimal? @db.Decimal(12, 0)
+  maxUses       Int?
+  usedCount     Int      @default(0)
+  expiresAt     DateTime?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+}
+
+model Setting {
+  key   String @id
+  value String @db.Text
+}
+
+// ---------------------------------------------------------------------------
+// لاگ فعالیت (Audit)
+// ---------------------------------------------------------------------------
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String // CREATE | UPDATE | DELETE | LOGIN | ...
+  entityType String // Product | Order | Category | ...
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType, entityId])
+}

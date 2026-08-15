@@ -1,0 +1,585 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "name": "مدیر سایت",
+      "email": "admin@lumire.com",
+      "phone": "09120000000",
+      "passwordHash": "$2b$10$n12yIm4H5DDm2fQ3W5IIY.VB0MaeBgii0Rfuj6M7BRqTrXB2CH4oC",
+      "role": "ADMIN",
+      "createdAt": "2026-01-01T00:00:00.000Z"
+    }
+  ],
+  "otps": [],
+  "brands": [
+    {
+      "id": "b-1",
+      "nameFa": "سبا",
+      "nameEn": "Seba",
+      "logo": ""
+    },
+    {
+      "id": "b-2",
+      "nameFa": "میبلین",
+      "nameEn": "Maybelline",
+      "logo": ""
+    },
+    {
+      "id": "b-3",
+      "nameFa": "گلرنگ",
+      "nameEn": "Golrang",
+      "logo": ""
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-1",
+      "name": "مراقبت پوست",
+      "slug": "skincare",
+      "parentId": null,
+      "order": 1
+    },
+    {
+      "id": "cat-2",
+      "name": "آرایش صورت",
+      "slug": "makeup",
+      "parentId": null,
+      "order": 2
+    },
+    {
+      "id": "cat-3",
+      "name": "مراقبت مو",
+      "slug": "haircare",
+      "parentId": null,
+      "order": 3
+    },
+    {
+      "id": "cat-4",
+      "name": "بهداشت شخصی",
+      "slug": "hygiene",
+      "parentId": null,
+      "order": 4
+    },
+    {
+      "id": "cat-5",
+      "name": "عطر و ادکلن",
+      "slug": "perfume",
+      "parentId": null,
+      "order": 5
+    },
+    {
+      "id": "cat-6",
+      "name": "لوازم آرایشی نوزاد و کودک",
+      "slug": "baby",
+      "parentId": null,
+      "order": 6
+    },
+    {
+      "id": "cat-1-1",
+      "name": "کرم مرطوب‌کننده",
+      "slug": "moisturizer",
+      "parentId": "cat-1",
+      "order": 1
+    },
+    {
+      "id": "cat-1-2",
+      "name": "پاک‌کننده صورت",
+      "slug": "face-wash",
+      "parentId": "cat-1",
+      "order": 2
+    },
+    {
+      "id": "cat-2-1",
+      "name": "رژ لب",
+      "slug": "lipstick",
+      "parentId": "cat-2",
+      "order": 1
+    }
+  ],
+  "products": [
+    {
+      "id": "p-1",
+      "title": "کرم مرطوب‌کننده روزانه سبا",
+      "categoryIds": [
+        "cat-1",
+        "cat-1-1"
+      ],
+      "brandId": "b-1",
+      "price": 285000,
+      "compareAtPrice": 320000,
+      "stock": 42,
+      "displayStockOverride": null,
+      "status": "PUBLISHED",
+      "image": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600",
+      "images": [
+        "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600"
+      ],
+      "description": "کرم مرطوب‌کننده سبک و سریع‌جذب مناسب پوست‌های معمولی و مختلط، بدون چربی اضافه.",
+      "rating": 4.6,
+      "createdAt": "2026-02-01T00:00:00.000Z",
+      "badge": "BESTSELLER",
+      "sourceUrl": null,
+      "priceMarkupPercent": null,
+      "discountMarkupPercent": null,
+      "lastScrapedAt": null,
+      "shippingMethodIds": [
+        "ship-post",
+        "ship-tipax",
+        "ship-cod-freight"
+      ]
+    },
+    {
+      "id": "p-2",
+      "title": "رژ لب مات میبلین رنگ قرمز کلاسیک",
+      "categoryIds": [
+        "cat-2",
+        "cat-2-1"
+      ],
+      "brandId": "b-2",
+      "price": 195000,
+      "compareAtPrice": null,
+      "stock": 60,
+      "displayStockOverride": null,
+      "status": "PUBLISHED",
+      "image": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=600",
+      "images": [
+        "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=600"
+      ],
+      "description": "ماندگاری بالا، بافت مخملی و پوشش کامل با رنگ قرمز جذاب.",
+      "rating": 4.4,
+      "createdAt": "2026-02-03T00:00:00.000Z",
+      "badge": null,
+      "sourceUrl": null,
+      "priceMarkupPercent": null,
+      "discountMarkupPercent": null,
+      "lastScrapedAt": null,
+      "shippingMethodIds": [
+        "ship-post",
+        "ship-tipax",
+        "ship-cod-freight"
+      ]
+    },
+    {
+      "id": "p-3",
+      "title": "شامپو تقویت‌کننده ضد ریزش مو",
+      "categoryIds": [
+        "cat-3"
+      ],
+      "brandId": null,
+      "price": 210000,
+      "compareAtPrice": 245000,
+      "stock": 35,
+      "displayStockOverride": null,
+      "status": "PUBLISHED",
+      "image": "https://images.unsplash.com/photo-1585232004423-05e6a1c5a4c8?w=600",
+      "images": [
+        "https://images.unsplash.com/photo-1585232004423-05e6a1c5a4c8?w=600"
+      ],
+      "description": "فرمول تقویت‌کننده ریشه مو با عصاره‌های گیاهی، مناسب مصرف روزانه.",
+      "rating": 4.3,
+      "createdAt": "2026-02-05T00:00:00.000Z",
+      "badge": null,
+      "sourceUrl": null,
+      "priceMarkupPercent": null,
+      "discountMarkupPercent": null,
+      "lastScrapedAt": null,
+      "shippingMethodIds": [
+        "ship-post",
+        "ship-tipax",
+        "ship-cod-freight"
+      ]
+    },
+    {
+      "id": "p-4",
+      "title": "ژل شستشوی صورت گیاهی",
+      "categoryIds": [
+        "cat-1",
+        "cat-1-2"
+      ],
+      "brandId": null,
+      "price": 165000,
+      "compareAtPrice": 199000,
+      "stock": 50,
+      "displayStockOverride": null,
+      "status": "PUBLISHED",
+      "image": "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=600",
+      "images": [
+        "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?w=600"
+      ],
+      "description": "پاک‌کننده ملایم صورت با pH متعادل، مناسب پوست حساس.",
+      "rating": 4.7,
+      "createdAt": "2026-02-07T00:00:00.000Z",
+      "badge": null,
+      "sourceUrl": null,
+      "priceMarkupPercent": null,
+      "discountMarkupPercent": null,
+      "lastScrapedAt": null,
+      "shippingMethodIds": [
+        "ship-post",
+        "ship-tipax",
+        "ship-cod-freight"
+      ]
+    },
+    {
+      "id": "p-5",
+      "title": "عطر جیبی زنانه گلرنگ",
+      "categoryIds": [
+        "cat-5"
+      ],
+      "brandId": "b-3",
+      "price": 340000,
+      "compareAtPrice": 390000,
+      "stock": 20,
+      "displayStockOverride": null,
+      "status": "PUBLISHED",
+      "image": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600",
+      "images": [
+        "https://images.unsplash.com/photo-1541643600914-78b084683601?w=600"
+      ],
+      "description": "رایحه ملایم و ماندگار، مناسب استفاده روزانه و مهمانی.",
+      "rating": 4.5,
+      "createdAt": "2026-02-10T00:00:00.000Z",
+      "badge": null,
+      "sourceUrl": null,
+      "priceMarkupPercent": null,
+      "discountMarkupPercent": null,
+      "lastScrapedAt": null,
+      "shippingMethodIds": [
+        "ship-post",
+        "ship-tipax",
+        "ship-cod-freight"
+      ]
+    },
+    {
+      "id": "p-6",
+      "title": "ست مسواک و خمیردندان سفیدکننده",
+      "categoryIds": [
+        "cat-4"
+      ],
+      "brandId": null,
+      "price": 128000,
+      "compareAtPrice": null,
+      "stock": 80,
+      "displayStockOverride": null,
+      "status": "PUBLISHED",
+      "image": "https://images.unsplash.com/photo-1559591935-c6c92c6d0553?w=600",
+      "images": [
+        "https://images.unsplash.com/photo-1559591935-c6c92c6d0553?w=600"
+      ],
+      "description": "ست کامل بهداشت دهان و دندان با فرمول سفیدکننده ملایم.",
+      "rating": 4.2,
+      "createdAt": "2026-02-12T00:00:00.000Z",
+      "badge": null,
+      "sourceUrl": null,
+      "priceMarkupPercent": null,
+      "discountMarkupPercent": null,
+      "lastScrapedAt": null,
+      "shippingMethodIds": [
+        "ship-post",
+        "ship-tipax",
+        "ship-cod-freight"
+      ]
+    },
+    {
+      "id": "p-7",
+      "title": "سرم ویتامین C روشن‌کننده پوست",
+      "categoryIds": [
+        "cat-1"
+      ],
+      "brandId": "b-1",
+      "price": 410000,
+      "compareAtPrice": 480000,
+      "stock": 1,
+      "displayStockOverride": null,
+      "status": "PUBLISHED",
+      "image": "https://images.unsplash.com/photo-1620916297397-a4a5402a3c67?w=600",
+      "images": [
+        "https://images.unsplash.com/photo-1620916297397-a4a5402a3c67?w=600"
+      ],
+      "description": "سرم غلیظ ویتامین C برای روشن‌کردن و یکنواخت‌کردن رنگ پوست.",
+      "rating": 4.8,
+      "createdAt": "2026-02-14T00:00:00.000Z",
+      "badge": "NEW",
+      "sourceUrl": null,
+      "priceMarkupPercent": null,
+      "discountMarkupPercent": null,
+      "lastScrapedAt": null,
+      "shippingMethodIds": [
+        "ship-post",
+        "ship-tipax",
+        "ship-cod-freight"
+      ]
+    },
+    {
+      "id": "p-8",
+      "title": "پالت سایه چشم ۱۲ رنگ",
+      "categoryIds": [
+        "cat-2"
+      ],
+      "brandId": "b-2",
+      "price": 265000,
+      "compareAtPrice": 310000,
+      "stock": 25,
+      "displayStockOverride": 1,
+      "status": "PUBLISHED",
+      "image": "https://images.unsplash.com/photo-1512207736890-6ffed4a54f7e?w=600",
+      "images": [
+        "https://images.unsplash.com/photo-1512207736890-6ffed4a54f7e?w=600"
+      ],
+      "description": "پالت ۱۲ رنگ با پیگمنت بالا، مناسب آرایش روز و شب.",
+      "rating": 4.5,
+      "createdAt": "2026-02-15T00:00:00.000Z",
+      "badge": null,
+      "sourceUrl": null,
+      "priceMarkupPercent": null,
+      "discountMarkupPercent": null,
+      "lastScrapedAt": null,
+      "shippingMethodIds": [
+        "ship-post",
+        "ship-tipax",
+        "ship-cod-freight"
+      ]
+    }
+  ],
+  "orders": [],
+  "menu": [
+    {
+      "id": "menu-1",
+      "label": "مراقبت پوست",
+      "link": "/?category=cat-1",
+      "parentId": null,
+      "order": 1
+    },
+    {
+      "id": "menu-1-1",
+      "label": "همه محصولات مراقبت پوست",
+      "link": "/?category=cat-1",
+      "parentId": "menu-1",
+      "order": 1
+    },
+    {
+      "id": "menu-1-2",
+      "label": "مراقبت پوست بر اساس برند",
+      "link": "/?category=cat-1",
+      "parentId": "menu-1",
+      "order": 2
+    },
+    {
+      "id": "menu-2",
+      "label": "آرایش صورت",
+      "link": "/?category=cat-2",
+      "parentId": null,
+      "order": 2
+    },
+    {
+      "id": "menu-3",
+      "label": "تخفیف‌های ویژه",
+      "link": "/discounts",
+      "parentId": null,
+      "order": 3
+    }
+  ],
+  "pages": [],
+  "settings": {
+    "headerText": "",
+    "footerText": "فروشگاه آنلاین محصولات آرایشی و بهداشتی اورجینال، با ارسال سریع به سراسر ایران.",
+    "slides": [
+      {
+        "id": "slide-1",
+        "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=900",
+        "title": "پوست و مویی که می‌درخشد",
+        "subtitle": "محصولات اورجینال با ارسال سریع",
+        "link": "/",
+        "active": true,
+        "priority": 1
+      }
+    ],
+    "footer": {
+      "brandName": "لومیر",
+      "aboutText": "فروشگاه آنلاین محصولات آرایشی و بهداشتی اورجینال، با ارسال سریع به سراسر ایران.",
+      "columns": [
+        {
+          "id": "col-support",
+          "title": "پشتیبانی",
+          "links": [
+            {
+              "id": "l1",
+              "label": "سوالات متداول",
+              "href": "/pages/faq"
+            },
+            {
+              "id": "l2",
+              "label": "راهنمای خرید",
+              "href": "/pages/guide"
+            },
+            {
+              "id": "l3",
+              "label": "شرایط بازگشت کالا",
+              "href": "/pages/returns"
+            }
+          ]
+        }
+      ],
+      "contactTitle": "تماس با ما",
+      "contactText": "پشتیبانی از ساعت ۹ تا ۲۱ همه‌روزه",
+      "phone": "",
+      "email": "",
+      "socials": [],
+      "copyright": "© 2026 لومیر — تمامی حقوق محفوظ است."
+    },
+    "landingSections": [
+      {
+        "id": "sec-hero",
+        "type": "hero",
+        "title": "اسلایدر / هیرو",
+        "active": true,
+        "order": 1
+      },
+      {
+        "id": "sec-trust",
+        "type": "trust_badges",
+        "title": "اعتماد و ضمانت",
+        "active": true,
+        "order": 2
+      },
+      {
+        "id": "sec-cats",
+        "type": "category_tiles",
+        "title": "دسته‌بندی‌ها",
+        "active": true,
+        "order": 3
+      },
+      {
+        "id": "sec-disc",
+        "type": "discount_carousel",
+        "title": "تخفیف‌های ویژه",
+        "active": true,
+        "order": 4
+      },
+      {
+        "id": "sec-products",
+        "type": "products",
+        "title": "محصولات",
+        "active": true,
+        "order": 5
+      },
+      {
+        "id": "sec-testimonials",
+        "type": "testimonials",
+        "title": "نظرات مشتریان",
+        "active": true,
+        "order": 6
+      }
+    ],
+    "trustBadges": [
+      {
+        "id": "tb1",
+        "icon": "✅",
+        "title": "ضمانت اصالت کالا",
+        "desc": "همه محصولات ۱۰۰٪ اورجینال"
+      },
+      {
+        "id": "tb2",
+        "icon": "🚚",
+        "title": "ارسال سریع",
+        "desc": "۲ تا ۴ روز کاری به سراسر کشور"
+      },
+      {
+        "id": "tb3",
+        "icon": "💳",
+        "title": "پرداخت در محل",
+        "desc": "یا کارت به کارت، بدون درگاه"
+      }
+    ],
+    "testimonials": [
+      {
+        "id": "t1",
+        "name": "نگار.ک",
+        "text": "کیفیت کرم مرطوب‌کننده واقعاً عالی بود و بسته‌بندی هم شیک و مرتب رسید.",
+        "product": "کرم مرطوب‌کننده روزانه"
+      },
+      {
+        "id": "t2",
+        "name": "سارا.م",
+        "text": "ارسال خیلی سریع بود و پرداخت در محل خیالم رو راحت کرد. حتماً دوباره خرید می‌کنم.",
+        "product": "رژ لب مات"
+      },
+      {
+        "id": "t3",
+        "name": "الهام.ر",
+        "text": "محصولات کاملاً اورجینال هستن، رنگ و رایحه دقیقاً همونی بود که توی عکس دیدم.",
+        "product": "عطر جیبی زنانه"
+      }
+    ]
+  },
+  "scraperLogs": [],
+  "pageViews": {},
+  "scraperSettings": {
+    "enabled": true,
+    "defaultPriceMarkupPercent": 0,
+    "defaultDiscountMarkupPercent": 0,
+    "intervalMinutes": 180,
+    "liveCheckOnCheckout": true,
+    "sources": [
+      {
+        "id": "digikala",
+        "name": "دیجی‌کالا",
+        "baseUrl": "https://www.digikala.com",
+        "active": true
+      },
+      {
+        "id": "technolife",
+        "name": "تکنولایف",
+        "baseUrl": "https://www.technolife.com",
+        "active": true
+      },
+      {
+        "id": "farnaa",
+        "name": "فرنا",
+        "baseUrl": "",
+        "active": true
+      },
+      {
+        "id": "custom",
+        "name": "URL مستقیم",
+        "baseUrl": "",
+        "active": true
+      }
+    ]
+  },
+  "shippingMethods": [
+    {
+      "id": "ship-post",
+      "name": "پست پیشتاز",
+      "description": "ارسال از طریق پست پیشتاز به سراسر کشور",
+      "cost": 45000,
+      "freightType": "PREPAID",
+      "estimatedDaysMin": 2,
+      "estimatedDaysMax": 4,
+      "active": true,
+      "order": 1
+    },
+    {
+      "id": "ship-tipax",
+      "name": "تیپاکس",
+      "description": "ارسال سریع تیپاکس",
+      "cost": 75000,
+      "freightType": "PREPAID",
+      "estimatedDaysMin": 1,
+      "estimatedDaysMax": 3,
+      "active": true,
+      "order": 2
+    },
+    {
+      "id": "ship-cod-freight",
+      "name": "پس‌کرایه (پرداخت هزینه در محل)",
+      "description": "هزینه ارسال هنگام تحویل محاسبه و دریافت می‌شود",
+      "cost": 0,
+      "freightType": "COLLECT",
+      "estimatedDaysMin": 2,
+      "estimatedDaysMax": 5,
+      "active": true,
+      "order": 3
+    }
+  ]
+}
