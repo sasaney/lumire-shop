@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { cache } from "react";
 import type { DB } from "./types";
 import {
   defaultFooter,
@@ -15,11 +14,11 @@ const SEED_PATH = path.join(process.cwd(), "data", "db.json");
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
 const useSupabase = Boolean(SUPABASE_URL && SUPABASE_SECRET_KEY);
+const isVercel = Boolean(process.env.VERCEL);
 
 const STATE_ROW_ID = "main";
 
-/** کش حافظه‌ای کوتاه‌عمر برای کاهش I/O روی هر request */
-const CACHE_TTL_MS = Number(process.env.DB_CACHE_TTL_MS || 3000);
+const CACHE_TTL_MS = Number(process.env.DB_CACHE_TTL_MS || 2000);
 let memoryCache: { data: DB; at: number } | null = null;
 
 function invalidateCache() {
@@ -32,7 +31,6 @@ function getCached(): DB | null {
     memoryCache = null;
     return null;
   }
-  // کپی سطحی کافی نیست برای جلوگیری از mutate؛ اما write همیشه invalidate می‌کند
   return memoryCache.data;
 }
 
@@ -40,7 +38,12 @@ function setCache(db: DB) {
   memoryCache = { data: db, at: Date.now() };
 }
 
-/** نرمال‌سازی دیتابیس قدیمی به ساختار جدید (بدون از دست رفتن داده) */
+export function getStorageMode(): "supabase" | "local-file" | "vercel-ephemeral" {
+  if (useSupabase) return "supabase";
+  if (isVercel) return "vercel-ephemeral";
+  return "local-file";
+}
+
 export function normalizeDb(raw: DB): DB {
   const db = raw as DB;
 
@@ -103,6 +106,13 @@ export function normalizeDb(raw: DB): DB {
     }
   }
 
+  if (!Array.isArray(db.users)) db.users = [];
+  if (!Array.isArray(db.products)) db.products = [];
+  if (!Array.isArray(db.categories)) db.categories = [];
+  if (!Array.isArray(db.brands)) db.brands = [];
+  if (!Array.isArray(db.orders)) db.orders = [];
+  if (!Array.isArray(db.otps)) db.otps = [];
+
   return db;
 }
 
@@ -138,9 +148,7 @@ async function writeToSupabase(db: DB): Promise<void> {
   if (error) throw new Error(`خطا در نوشتن در Supabase: ${error.message}`);
 }
 
-const RUNTIME_PATH = process.env.VERCEL
-  ? path.join("/tmp", "lumire-db.json")
-  : SEED_PATH;
+const RUNTIME_PATH = isVercel ? path.join("/tmp", "lumire-db.json") : SEED_PATH;
 
 function ensureRuntimeFile() {
   if (RUNTIME_PATH === SEED_PATH) return;
@@ -168,21 +176,20 @@ async function readUncached(): Promise<DB> {
   return db;
 }
 
-/**
- * خواندن دیتابیس با:
- * 1) dedupe در یک request با React cache
- * 2) کش حافظه‌ای کوتاه‌عمر بین requestها
- */
-export const readDatabase = cache(async (): Promise<DB> => readUncached());
-
 export const database = {
-  read: readDatabase,
+  read: async (): Promise<DB> => readUncached(),
   write: async (db: DB): Promise<void> => {
-    if (useSupabase) await writeToSupabase(db);
-    else writeToFile(db);
+    if (useSupabase) {
+      await writeToSupabase(db);
+    } else if (isVercel) {
+      throw new Error(
+        "ذخیره‌سازی روی Vercel بدون دیتابیس ممکن نیست. در Vercel این دو متغیر را تنظیم کنید: SUPABASE_URL و SUPABASE_SECRET_KEY (راهنما در README)."
+      );
+    } else {
+      writeToFile(db);
+    }
     setCache(db);
   },
-  /** باطل کردن کش (مثلاً بعد از اسکرپر پس‌زمینه) */
   invalidate: invalidateCache,
 };
 
